@@ -1,0 +1,8 @@
+# .env 파일 관련
+.env
+.env.*
+!.env.sample
+
+tmp/*
+#빌드 파일
+agit-crawler
