@@ -3,6 +3,7 @@ package pkg
 import (
 	"agit-crawler/app/lib"
 	"fmt"
+	"strings"
 
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
@@ -22,7 +23,7 @@ type Crawler struct {
 
 // 생성자
 func NewCrawler(env lib.Env) *Crawler {
-	url := launcher.New().Headless(false).MustLaunch()
+	url := launcher.New().Headless(true).MustLaunch() //false 경우 화면 표출
 	browser := rod.New().ControlURL(url).MustConnect()
 	page := browser.MustPage("")
 
@@ -58,6 +59,13 @@ func (c *Crawler) LoginAgit() {
 
 // 게시글 가져오기
 func (c *Crawler) GetPosts() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered:", r)
+			c.page = c.browser.MustPage("")
+			return // 💡 여기서 함수 종료
+		}
+	}()
 	if c.page == nil {
 		fmt.Println("Error: Page is not initialized")
 		return
@@ -69,7 +77,8 @@ func (c *Crawler) GetPosts() {
 
 	// 로그인 페이지로 리디렉션됐는지 확인
 	currentURL := c.page.MustInfo().URL
-	if currentURL == "https://appm.agit.io/login" || currentURL == fmt.Sprintf("https://%s.agit.io/login", c.agitInfo.name) {
+	if strings.Contains(currentURL, "agit.io/login") {
+
 		fmt.Println("Detected logged-out state. Logging in again...")
 
 		c.LoginAgit()

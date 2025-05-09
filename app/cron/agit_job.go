@@ -20,5 +20,5 @@ func NewAgitJob(
 
 func (j *AgitJob) Register(c *cron.Cron) {
 
-	c.AddFunc("@every 5s", j.crawler.GetPosts)
+	c.AddFunc("@every 4s", j.crawler.GetPosts)
 }

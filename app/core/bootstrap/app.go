@@ -47,7 +47,6 @@ func RegisterLifecycle(
 			logger.Info("Crawler started with cron job")
 			cronManager.Start()
 
-			crawler.LoginAgit()
 			return nil
 		},
 		OnStop: func(ctx context.Context) error {
